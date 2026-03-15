@@ -10,6 +10,7 @@ It's not complete yet. I actively working on it. Check every time.
 - Axum, tower for webservices.
 - logging with the tracing package. Behavior controlled by RUST_LOG variable.
 - all code must pass unit tests, cargo check, cargo clippy with pedantic.
+- Prefer interfaces over loops when sequentially accessing data structures.
 
 ### Testing debug and testability
 
