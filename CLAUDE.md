@@ -14,13 +14,14 @@ It's not complete yet. I actively working on it. Check every time.
 
 ### Testing debug and testability
 
-- Write unit tests everywhere excepting top level functions. Top level functions must contain no testable logic.
+- Write unit tests everywhere excepting top level functions. Top level
+  functions must contain no testable logic.
 - Test web services endpoints with hurl.
 - All recoverable errors must be logged. All debug info from libraries must be preserved.
 
 ### Orchestration
 
-- Use gnu make. For testing use following targets: 
+- Use gnu make. For testing use following targets:
 
 ### Pre commit
 

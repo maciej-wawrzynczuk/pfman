@@ -1,0 +1,9 @@
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "markdownlint-cli2"
+name = "markdownlint-cli2"
+entry = "markdownlint-cli2"
+language = "system"
+types = ["markdown"]

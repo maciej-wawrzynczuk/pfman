@@ -2,12 +2,14 @@
 
 ## Stories
 
-1. Create a web service that allows loading a CSV transaction log. POST method. Just text/csv.
+1. Create a web service that allows loading a CSV transaction log.
+   POST method. Just text/csv.
 2. Create a web service which returns the log as JSON. Display all records. (GET)
 
 ## Requirements
 
-- Design a clear interface for the transaction log. Implement a struct for the entry. Implement a collection accessible via iterator.
+- Design a clear interface for the transaction log. Implement a struct for
+  the entry. Implement a collection accessible via iterator.
 - CSV fields (delimiter is `;`)
   - date: Format in csv: `yyyy-mm-dd`
   - symbol: string
@@ -26,10 +28,10 @@ The GET endpoint should return exactly the same data as in CSV.
 
 All format errors should log exact messages from deserialization. And return 400.
 
-## Implementation notes.
+## Implementation notes
 
 - Use basic ISO 8601 date.
-- For transation log implementation:
+- For transaction log implementation:
   - you can expose entry fields,
-  - Do not expose storage algorhitm details.
+  - Do not expose storage algorithm details.
   - Expose iterator for sequential access.
