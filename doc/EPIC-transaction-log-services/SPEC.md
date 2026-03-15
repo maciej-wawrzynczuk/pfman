@@ -35,3 +35,5 @@ All format errors should log exact messages from deserialization. And return 400
   - you can expose entry fields,
   - Do not expose storage algorithm details.
   - Expose iterator for sequential access.
+- Allow setting the listen address via env variable: `PFMAN_LISTEN_ADDR`.
+  Default: `127.0.0.1:8080`.
