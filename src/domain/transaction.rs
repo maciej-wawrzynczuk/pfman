@@ -10,9 +10,9 @@ pub struct TransactionEntry {
     pub symbol: String,
     #[serde(rename = "number")]
     pub number: i64,
-    #[serde(rename = "price")]
+    #[serde(rename = "price", with = "rust_decimal::serde::str")]
     pub price: Decimal,
-    #[serde(rename = "commission")]
+    #[serde(rename = "commission", with = "rust_decimal::serde::str")]
     pub commission: Decimal,
     #[serde(rename = "currency")]
     pub currency: String,
