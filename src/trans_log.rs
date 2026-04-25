@@ -17,9 +17,13 @@ pub struct TransLog {
 
 impl TransLog {
     pub fn from_reader<R: Read>(rdr: R) -> Result<Self, csv::Error> {
-        Ok(Self {
-            data: parse_csv(rdr)?
-        })
+        let data = ReaderBuilder::new()
+            .delimiter(b';')
+            .from_reader(rdr)
+            .deserialize()
+            .collect::<Result<Vec<TransEntry>,_>>()?;
+
+        Ok(Self { data })
     }
 }
 
@@ -31,14 +35,6 @@ struct TransEntry {
     price: Decimal,
     commission: Decimal,
     currency: String,
-}
-
-fn parse_csv<R: Read>(rdr: R) -> Result<Vec<TransEntry>, csv::Error> {
-    ReaderBuilder::new()
-        .delimiter(b';')
-        .from_reader(rdr)
-        .deserialize()
-        .collect()
 }
 
 #[cfg(test)]
