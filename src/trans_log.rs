@@ -7,11 +7,24 @@
 use chrono::NaiveDate;
 use csv::ReaderBuilder;
 use rust_decimal::Decimal;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 use std::io::Read;
 
-#[derive(Deserialize, Debug)]
-struct TransLogEDO {
+#[derive(Serialize, PartialEq, Debug)]
+pub struct TransLog {
+    data: Vec<TransEntry>
+}
+
+impl TransLog {
+    pub fn from_reader<R: Read>(rdr: R) -> Result<Self, csv::Error> {
+        Ok(Self {
+            data: parse_csv(rdr)?
+        })
+    }
+}
+
+#[derive(Deserialize, Serialize, Debug, PartialEq)]
+struct TransEntry {
     date: NaiveDate,
     symbol: String,
     number: i16,
@@ -20,7 +33,7 @@ struct TransLogEDO {
     currency: String,
 }
 
-fn parse_csv<R: Read>(rdr: R) -> Result<Vec<TransLogEDO>, csv::Error> {
+fn parse_csv<R: Read>(rdr: R) -> Result<Vec<TransEntry>, csv::Error> {
     ReaderBuilder::new()
         .delimiter(b';')
         .from_reader(rdr)
@@ -32,13 +45,27 @@ fn parse_csv<R: Read>(rdr: R) -> Result<Vec<TransLogEDO>, csv::Error> {
 mod test {
     use super::*;
     use indoc::indoc;
+    use rust_decimal::dec;
     #[test]
-    fn deserialize1() {
+    fn json_roundtrip() {
         let csv1 = indoc! {"\
             date;symbol;number;price;commission;currency
-            2000-01-01;FOO;10;123.134;1.00;USD
+            2000-01-02;FOO;10;123.134;1.00;USD
         "};
-        let result = parse_csv(csv1.as_bytes()).unwrap();
-        assert_eq!(result.len(), 1);
+
+        let sut = TransLog::from_reader(csv1.as_bytes()).unwrap();
+        let expected: TransLog = TransLog { 
+            data: vec! [
+                TransEntry {
+                    date: chrono::NaiveDate::from_ymd_opt(2000, 1, 2).unwrap(),
+                    symbol: "FOO".into(),
+                    number: 10,
+                    price: dec!(123.134),
+                    commission: dec!(1),
+                    currency: "USD".into()
+                }
+            ]
+         };
+         assert_eq!(sut, expected);
     }
 }
