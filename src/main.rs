@@ -1,6 +1,6 @@
 mod quotes;
 mod trans_log;
-use crate::{quotes::Quotes, trans_log::TransLog};
+use crate::{quotes::Cache, trans_log::TransLog};
 use anyhow::Context;
 use std::{env, fs::File};
 
@@ -14,7 +14,7 @@ fn main() -> anyhow::Result<()> {
     let j = serde_json::to_string_pretty(&tl)?;
     println!("{j}");
 
-    _ = Quotes::new();
+    _ = Cache::new();
 
     Ok(())
 }
