@@ -1,8 +1,8 @@
-mod trans_log;
 mod quotes;
-use std::{env, fs::File};
-use anyhow::Context;
+mod trans_log;
 use crate::{quotes::Quotes, trans_log::TransLog};
+use anyhow::Context;
+use std::{env, fs::File};
 
 fn main() -> anyhow::Result<()> {
     env_logger::init();

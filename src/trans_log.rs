@@ -7,12 +7,12 @@
 use chrono::NaiveDate;
 use csv::ReaderBuilder;
 use rust_decimal::Decimal;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::io::Read;
 
 #[derive(Serialize, PartialEq, Debug)]
 pub struct TransLog {
-    data: Vec<TransEntry>
+    data: Vec<TransEntry>,
 }
 
 impl TransLog {
@@ -21,7 +21,7 @@ impl TransLog {
             .delimiter(b';')
             .from_reader(rdr)
             .deserialize()
-            .collect::<Result<Vec<TransEntry>,_>>()?;
+            .collect::<Result<Vec<TransEntry>, _>>()?;
 
         Ok(Self { data })
     }
@@ -50,18 +50,16 @@ mod test {
         "};
 
         let sut = TransLog::from_reader(csv1.as_bytes()).unwrap();
-        let expected: TransLog = TransLog { 
-            data: vec! [
-                TransEntry {
-                    date: chrono::NaiveDate::from_ymd_opt(2000, 1, 2).unwrap(),
-                    symbol: "FOO".into(),
-                    number: 10,
-                    price: dec!(123.134),
-                    commission: dec!(1),
-                    currency: "USD".into()
-                }
-            ]
-         };
-         assert_eq!(sut, expected);
+        let expected: TransLog = TransLog {
+            data: vec![TransEntry {
+                date: chrono::NaiveDate::from_ymd_opt(2000, 1, 2).unwrap(),
+                symbol: "FOO".into(),
+                number: 10,
+                price: dec!(123.134),
+                commission: dec!(1),
+                currency: "USD".into(),
+            }],
+        };
+        assert_eq!(sut, expected);
     }
 }
