@@ -6,7 +6,7 @@ use std::{
 use anyhow::Context;
 use chrono::NaiveDate;
 use directories::ProjectDirs;
-use redb::{Database, ReadableDatabase, TableDefinition};
+use redb::{Database, DatabaseError, ReadableDatabase, TableDefinition};
 use rust_decimal::Decimal;
 
 pub struct Cache {
@@ -18,9 +18,12 @@ const CACHE_TABLE_DEF: TableDefinition<&str, [u8; 16]> = TableDefinition::new("c
 impl Cache {
     pub fn new() -> anyhow::Result<Self> {
         let db_file = Cache::default_dir()?;
-        Cache::new_with_in(&db_file)
+        let c = Cache::new_with_in(&db_file)?;
+        Ok(c)
+
     }
-    pub fn new_with_in(cache_dir: &Path) -> anyhow::Result<Self> {
+
+    pub fn new_with_in(cache_dir: &Path) -> Result<Self, DatabaseError> {
         let db_file = cache_dir.join("db");
         let db = Database::create(&db_file)?;
         log::info!("Using database {db_file:?}");

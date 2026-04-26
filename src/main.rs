@@ -1,6 +1,6 @@
-mod quotes;
+mod cache;
 mod trans_log;
-use crate::{quotes::Cache, trans_log::TransLog};
+use crate::{cache::Cache, trans_log::TransLog};
 use anyhow::Context;
 use std::{env, fs::File};
 
