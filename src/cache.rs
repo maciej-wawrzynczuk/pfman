@@ -9,16 +9,16 @@ use directories::ProjectDirs;
 use redb::{Database, DatabaseError, ReadableDatabase, TableDefinition};
 use rust_decimal::Decimal;
 
-pub struct Cache {
+pub struct RedbCache {
     db: Database,
 }
 
 const CACHE_TABLE_DEF: TableDefinition<&str, [u8; 16]> = TableDefinition::new("cache");
 
-impl Cache {
+impl RedbCache {
     pub fn new() -> anyhow::Result<Self> {
-        let db_file = Cache::default_dir()?;
-        let c = Cache::new_with_in(&db_file)?;
+        let db_file = RedbCache::default_dir()?;
+        let c = RedbCache::new_with_in(&db_file)?;
         Ok(c)
 
     }
@@ -46,7 +46,7 @@ impl Cache {
     pub fn get(&self, symbol: &str, date: NaiveDate) -> anyhow::Result<Option<Decimal>> {
         let txn = self.db.begin_read()?;
         let t = txn.open_table(CACHE_TABLE_DEF)?;
-        let k = Cache::key(symbol, date);
+        let k = RedbCache::key(symbol, date);
         let v = t.get(&k.as_str())?;
         Ok(v.map(|g| {
             Decimal::deserialize(g.value())
@@ -57,7 +57,7 @@ impl Cache {
         let txn = self.db.begin_write()?;
         {
             let mut t = txn.open_table(CACHE_TABLE_DEF)?;
-            let k = Cache::key(symbol, date);
+            let k = RedbCache::key(symbol, date);
             let i = quote.serialize();
             t.insert(k.as_str(), i)?;
         }
@@ -78,7 +78,7 @@ mod test {
         let d = NaiveDate::from_ymd_opt(2001, 1, 18).unwrap();
         let s = "foo";
 
-        let k = Cache::key(s, d);
+        let k = RedbCache::key(s, d);
         let expected = "foo:2001-01-18";
         assert_eq!(k, expected);
     }
@@ -86,7 +86,7 @@ mod test {
     #[test]
     fn cache_roundtrip() {
         let tmp = tempdir().unwrap();
-        let sut = Cache::new_with_in(tmp.path()).unwrap();
+        let sut = RedbCache::new_with_in(tmp.path()).unwrap();
         let d = NaiveDate::from_ymd_opt(2001, 1, 18).unwrap();
         let s = "foo";
         let q = dec!(10.8);

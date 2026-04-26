@@ -16,4 +16,4 @@ https://api.twelvedata.com/eod?symbol=AAPL&apikey=demo
 [redb](https://docs.rs/redb/latest/redb/)
 For files location: [https://docs.rs/directories/latest/directories/]
 
-I'm going to store decimals as u128.
+TODO: Make cache generic.
