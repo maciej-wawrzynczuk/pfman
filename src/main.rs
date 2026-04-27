@@ -1,5 +1,6 @@
 mod cache;
 mod trans_log;
+mod portfolio;
 use crate::{cache::RedbCache, trans_log::TransLog};
 use anyhow::Context;
 use chrono::NaiveDate;
