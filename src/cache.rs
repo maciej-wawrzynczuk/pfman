@@ -9,6 +9,8 @@ use directories::ProjectDirs;
 use redb::{Database, DatabaseError, ReadableDatabase, TableDefinition};
 use rust_decimal::Decimal;
 
+use crate::Cache;
+
 pub struct RedbCache {
     db: Database,
 }
@@ -42,8 +44,11 @@ impl RedbCache {
     fn key(symbol: &str, date: NaiveDate) -> String {
         format!("{}:{}", symbol, date)
     }
+}
 
-    pub fn get(&self, symbol: &str, date: NaiveDate) -> anyhow::Result<Option<Decimal>> {
+impl Cache for RedbCache {
+    type Error = anyhow::Error;
+       fn get(&self, symbol: &str, date: NaiveDate) -> anyhow::Result<Option<Decimal>> {
         let txn = self.db.begin_read()?;
         let t = txn.open_table(CACHE_TABLE_DEF)?;
         let k = RedbCache::key(symbol, date);
@@ -53,7 +58,7 @@ impl RedbCache {
         }))
     }
 
-    pub fn set(&self, symbol: &str, date: NaiveDate, quote: Decimal) -> anyhow::Result<()> {
+    fn set(&self, symbol: &str, date: NaiveDate, quote: Decimal) -> anyhow::Result<()> {
         let txn = self.db.begin_write()?;
         {
             let mut t = txn.open_table(CACHE_TABLE_DEF)?;
