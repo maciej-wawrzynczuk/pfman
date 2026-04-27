@@ -22,7 +22,6 @@ impl RedbCache {
         let db_file = RedbCache::default_dir()?;
         let c = RedbCache::new_with_in(&db_file)?;
         Ok(c)
-
     }
 
     pub fn new_with_in(cache_dir: &Path) -> Result<Self, DatabaseError> {
@@ -48,14 +47,12 @@ impl RedbCache {
 
 impl Cache for RedbCache {
     type Error = anyhow::Error;
-       fn get(&self, symbol: &str, date: NaiveDate) -> anyhow::Result<Option<Decimal>> {
+    fn get(&self, symbol: &str, date: NaiveDate) -> anyhow::Result<Option<Decimal>> {
         let txn = self.db.begin_read()?;
         let t = txn.open_table(CACHE_TABLE_DEF)?;
         let k = RedbCache::key(symbol, date);
         let v = t.get(&k.as_str())?;
-        Ok(v.map(|g| {
-            Decimal::deserialize(g.value())
-        }))
+        Ok(v.map(|g| Decimal::deserialize(g.value())))
     }
 
     fn set(&self, symbol: &str, date: NaiveDate, quote: Decimal) -> anyhow::Result<()> {
