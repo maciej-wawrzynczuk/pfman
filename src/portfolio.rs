@@ -22,8 +22,24 @@ mod test {
     #[test]
     fn single() {
         let mut sut = Portfolio::new();
-
         sut.add_transaction("FOO", 1);
         assert_eq!(*sut.data.get("FOO").unwrap(), 1);
     }
+
+    #[test]
+    fn double() {
+        let mut sut = Portfolio::new();
+        sut.add_transaction("FOO", 1);
+        sut.add_transaction("FOO", 2);
+        assert_eq!(*sut.data.get("FOO").unwrap(), 3);
+    }
+    #[test]
+    fn different() {
+        let mut sut = Portfolio::new();
+        sut.add_transaction("FOO", 1);
+        sut.add_transaction("BAR", 2);
+        assert_eq!(*sut.data.get("FOO").unwrap(), 1);
+        assert_eq!(*sut.data.get("BAR").unwrap(), 2);
+    }
+
 }
